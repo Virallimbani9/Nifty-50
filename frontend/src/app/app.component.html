@@ -1,0 +1,29 @@
+<div class="app-shell">
+  <app-navbar></app-navbar>
+  <app-index-header></app-index-header>
+
+  <main class="dashboard-layout">
+    <!-- Left: main stock table -->
+    <section class="main-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="title-dot"></span>
+          Nifty 50 Constituents
+        </h2>
+        <span class="panel-sub">All 50 stocks · Live prices</span>
+      </div>
+      <app-stock-table></app-stock-table>
+    </section>
+
+    <!-- Right: gainers/losers sidebar -->
+    <aside class="side-panel">
+      <app-gainers-losers></app-gainers-losers>
+    </aside>
+  </main>
+
+  <footer class="app-footer">
+    <span>Data sourced from NSE India · For informational purposes only · Not financial advice</span>
+    <span class="footer-sep">·</span>
+    <span>Built with Angular &amp; Node.js</span>
+  </footer>
+</div>

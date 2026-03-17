@@ -1,0 +1,66 @@
+<div class="gl-panel">
+  <div class="gl-tabs">
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'gainers'"
+      (click)="activeTab = 'gainers'"
+    >
+      <span class="tab-icon">▲</span> Top Gainers
+      <span class="count-badge" *ngIf="data">{{ data.gainers.length }}</span>
+    </button>
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'losers'"
+      (click)="activeTab = 'losers'"
+    >
+      <span class="tab-icon">▼</span> Top Losers
+      <span class="count-badge" *ngIf="data">{{ data.losers.length }}</span>
+    </button>
+  </div>
+
+  <div class="gl-list">
+    <!-- Skeleton -->
+    <ng-container *ngIf="isLoading">
+      <div class="gl-row skeleton-row" *ngFor="let i of skeletonRows">
+        <div class="skeleton s-symbol"></div>
+        <div class="skeleton s-price"></div>
+        <div class="skeleton s-change"></div>
+      </div>
+    </ng-container>
+
+    <!-- Data -->
+    <div
+      class="gl-row"
+      *ngFor="let item of activeList; let i = index"
+      [class.gainer]="activeTab === 'gainers'"
+      [class.loser]="activeTab === 'losers'"
+    >
+      <span class="rank">{{ i + 1 }}</span>
+
+      <div class="stock-info">
+        <span class="stock-symbol">{{ item.symbol }}</span>
+        <span class="stock-vol">Vol: {{ formatVolume(item.volume) }}</span>
+      </div>
+
+      <div class="price-info">
+        <span class="ltp">₹{{ item.ltp | number:'1.2-2' }}</span>
+        <span class="change-val" [class.gainer-text]="activeTab === 'gainers'" [class.loser-text]="activeTab === 'losers'">
+          {{ item.change >= 0 ? '+' : '' }}{{ item.change | number:'1.2-2' }}
+        </span>
+      </div>
+
+      <div class="pchange-pill" [class.gainer-pill]="activeTab === 'gainers'" [class.loser-pill]="activeTab === 'losers'">
+        {{ item.pChange >= 0 ? '+' : '' }}{{ item.pChange | number:'1.2-2' }}%
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty" *ngIf="!isLoading && activeList.length === 0">
+      No data available
+    </div>
+  </div>
+
+  <div class="gl-footer" *ngIf="data">
+    <span>As of {{ data.timestamp | date:'HH:mm:ss' }}</span>
+  </div>
+</div>

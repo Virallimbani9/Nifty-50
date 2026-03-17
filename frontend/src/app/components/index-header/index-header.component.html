@@ -1,0 +1,25 @@
+<div class="index-header">
+  <div class="market-badge" [class.open]="isMarketOpen" [class.closed]="!isMarketOpen">
+    <span class="dot"></span>
+    <span>{{ isMarketOpen ? 'Market Open' : 'Market Closed' }}</span>
+  </div>
+
+  <div class="indices-strip" *ngIf="indexData">
+    <div class="index-card" *ngFor="let idx of [indexData.nifty50, indexData.bankNifty, indexData.niftyIt, indexData.niftyMidcap50]">
+      <ng-container *ngIf="idx">
+        <span class="idx-name">{{ idx.index }}</span>
+        <span class="idx-value">{{ idx.last | number:'1.2-2' }}</span>
+        <span class="idx-change" [class.positive]="idx.percentChange >= 0" [class.negative]="idx.percentChange < 0">
+          <span class="arrow">{{ idx.percentChange >= 0 ? '▲' : '▼' }}</span>
+          {{ idx.variation | number:'1.2-2' }}
+          ({{ idx.percentChange | number:'1.2-2' }}%)
+        </span>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="last-updated">
+    <span class="refresh-icon">↻</span>
+    Last updated: {{ lastUpdated | date:'HH:mm:ss' }}
+  </div>
+</div>

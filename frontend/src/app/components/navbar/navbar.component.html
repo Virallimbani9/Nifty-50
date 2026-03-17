@@ -1,0 +1,38 @@
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="brand-icon">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="28" height="28" rx="6" fill="url(#brandGrad)"/>
+        <path d="M5 20 L10 13 L14 16 L18 9 L23 12" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="23" cy="12" r="2" fill="white"/>
+        <defs>
+          <linearGradient id="brandGrad" x1="0" y1="0" x2="28" y2="28">
+            <stop offset="0%" stop-color="#3b82f6"/>
+            <stop offset="100%" stop-color="#8b5cf6"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="brand-text">
+      <span class="brand-name">Nifty<span class="accent">50</span></span>
+      <span class="brand-sub">Live Dashboard</span>
+    </div>
+  </div>
+
+  <div class="nav-center">
+    <span class="exchange-tag">NSE</span>
+    <span class="exchange-tag">BSE</span>
+    <span class="exchange-tag">F&amp;O</span>
+  </div>
+
+  <div class="nav-right">
+    <div class="clock">
+      <span class="clock-label">IST</span>
+      <span class="clock-time">{{ istTime | date:'HH:mm:ss' }}</span>
+    </div>
+    <div class="refresh-info">
+      <span class="dot-pulse"></span>
+      <span>Auto-refresh 30s</span>
+    </div>
+  </div>
+</nav>

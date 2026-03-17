@@ -1,0 +1,135 @@
+<div class="stock-table-wrapper">
+  <!-- Summary Stats -->
+  <div class="market-breadth" *ngIf="!isLoading && allStocks.length">
+    <div class="breadth-item advances">
+      <span class="count">{{ advancesCount }}</span>
+      <span class="label">Advances</span>
+    </div>
+    <div class="breadth-bar">
+      <div class="bar-advances" [style.width.%]="(advancesCount / allStocks.length) * 100"></div>
+      <div class="bar-unchanged" [style.width.%]="(unchangedCount / allStocks.length) * 100"></div>
+      <div class="bar-declines" [style.width.%]="(declinesCount / allStocks.length) * 100"></div>
+    </div>
+    <div class="breadth-item declines">
+      <span class="count">{{ declinesCount }}</span>
+      <span class="label">Declines</span>
+    </div>
+  </div>
+
+  <!-- Search & Controls -->
+  <div class="table-controls">
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input
+        type="text"
+        placeholder="Search symbol..."
+        [(ngModel)]="searchQuery"
+        (input)="onSearch()"
+      />
+    </div>
+    <span class="result-count" *ngIf="!isLoading">
+      {{ filteredStocks.length }} stocks
+    </span>
+  </div>
+
+  <!-- Error state -->
+  <div class="error-state" *ngIf="errorMsg">
+    <span>⚠️ {{ errorMsg }}</span>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th (click)="sort('symbol')" class="sortable">
+            Symbol <span class="sort-arrow" *ngIf="sortField === 'symbol'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('ltp')" class="sortable text-right">
+            LTP <span class="sort-arrow" *ngIf="sortField === 'ltp'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('change')" class="sortable text-right">
+            Change <span class="sort-arrow" *ngIf="sortField === 'change'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('pChange')" class="sortable text-right">
+            % Chg <span class="sort-arrow" *ngIf="sortField === 'pChange'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('open')" class="sortable text-right hide-sm">
+            Open <span class="sort-arrow" *ngIf="sortField === 'open'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('high')" class="sortable text-right hide-sm">
+            High <span class="sort-arrow" *ngIf="sortField === 'high'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('low')" class="sortable text-right hide-sm">
+            Low <span class="sort-arrow" *ngIf="sortField === 'low'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('previousClose')" class="sortable text-right hide-md">
+            Prev Close <span class="sort-arrow" *ngIf="sortField === 'previousClose'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('volume')" class="sortable text-right hide-md">
+            Volume <span class="sort-arrow" *ngIf="sortField === 'volume'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('weekHigh52')" class="sortable text-right hide-lg">
+            52W High <span class="sort-arrow" *ngIf="sortField === 'weekHigh52'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+          <th (click)="sort('weekLow52')" class="sortable text-right hide-lg">
+            52W Low <span class="sort-arrow" *ngIf="sortField === 'weekLow52'">{{ sortDir === 'asc' ? '↑' : '↓' }}</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Skeleton -->
+        <ng-container *ngIf="isLoading">
+          <tr class="skeleton-row" *ngFor="let i of skeletonRows">
+            <td><div class="skeleton w-20"></div></td>
+            <td><div class="skeleton w-16 ml-auto"></div></td>
+            <td><div class="skeleton w-14 ml-auto"></div></td>
+            <td><div class="skeleton w-12 ml-auto"></div></td>
+            <td class="hide-sm"><div class="skeleton w-14 ml-auto"></div></td>
+            <td class="hide-sm"><div class="skeleton w-14 ml-auto"></div></td>
+            <td class="hide-sm"><div class="skeleton w-14 ml-auto"></div></td>
+            <td class="hide-md"><div class="skeleton w-16 ml-auto"></div></td>
+            <td class="hide-md"><div class="skeleton w-14 ml-auto"></div></td>
+            <td class="hide-lg"><div class="skeleton w-16 ml-auto"></div></td>
+            <td class="hide-lg"><div class="skeleton w-16 ml-auto"></div></td>
+          </tr>
+        </ng-container>
+
+        <!-- Data rows -->
+        <tr
+          *ngFor="let stock of filteredStocks; trackBy: trackBySymbol"
+          [class.flash-up]="priceFlash[stock.symbol] === 'up'"
+          [class.flash-down]="priceFlash[stock.symbol] === 'down'"
+        >
+          <td class="symbol-cell">
+            <span class="symbol">{{ stock.symbol }}</span>
+            <span class="series" *ngIf="stock.series">{{ stock.series }}</span>
+          </td>
+          <td class="text-right price-cell" [class.flash-up]="priceFlash[stock.symbol] === 'up'" [class.flash-down]="priceFlash[stock.symbol] === 'down'">
+            {{ stock.ltp | number:'1.2-2' }}
+          </td>
+          <td class="text-right" [class.positive]="stock.change >= 0" [class.negative]="stock.change < 0">
+            {{ stock.change >= 0 ? '+' : '' }}{{ stock.change | number:'1.2-2' }}
+          </td>
+          <td class="text-right" [class.positive]="stock.pChange >= 0" [class.negative]="stock.pChange < 0">
+            <span class="pchange-badge" [class.positive]="stock.pChange >= 0" [class.negative]="stock.pChange < 0">
+              {{ stock.pChange >= 0 ? '▲' : '▼' }} {{ stock.pChange | number:'1.2-2' }}%
+            </span>
+          </td>
+          <td class="text-right hide-sm muted">{{ stock.open | number:'1.2-2' }}</td>
+          <td class="text-right hide-sm green">{{ stock.high | number:'1.2-2' }}</td>
+          <td class="text-right hide-sm red">{{ stock.low | number:'1.2-2' }}</td>
+          <td class="text-right hide-md muted">{{ stock.previousClose | number:'1.2-2' }}</td>
+          <td class="text-right hide-md muted">{{ formatVolume(stock.volume) }}</td>
+          <td class="text-right hide-lg muted">{{ stock.weekHigh52 | number:'1.2-2' }}</td>
+          <td class="text-right hide-lg muted">{{ stock.weekLow52 | number:'1.2-2' }}</td>
+        </tr>
+
+        <!-- Empty state -->
+        <tr *ngIf="!isLoading && filteredStocks.length === 0">
+          <td colspan="11" class="empty-state">No stocks found</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

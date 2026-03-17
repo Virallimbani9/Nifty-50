@@ -1,0 +1,134 @@
+.navbar {
+  height: 64px;
+  background: var(--nav-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .brand-icon {
+    line-height: 0;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .brand-name {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text-primary);
+    line-height: 1;
+
+    .accent {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  }
+
+  .brand-sub {
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+}
+
+.nav-center {
+  display: flex;
+  gap: 8px;
+  margin-left: 24px;
+
+  .exchange-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+  }
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-left: auto;
+
+  .clock {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    .clock-label {
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .clock-time {
+      font-size: 15px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--text-primary);
+      letter-spacing: 0.5px;
+    }
+  }
+
+  .refresh-info {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 500;
+
+    .dot-pulse {
+      width: 7px;
+      height: 7px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: dotpulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes dotpulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+@media (max-width: 640px) {
+  .nav-center { display: none; }
+  .refresh-info { display: none; }
+  .navbar { padding: 0 14px; }
+}
